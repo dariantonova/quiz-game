@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IsEnum, IsNumber } from 'class-validator';
+import { IsBoolean, IsEnum, IsNumber } from 'class-validator';
 import { configValidationUtility } from '../common/utils/config-validation.util';
 import { ConfigService } from '@nestjs/config';
 
@@ -27,12 +27,22 @@ export class CoreConfig {
   )
   port: number;
 
+  @IsBoolean({
+    message:
+      'Set Env variable IS_SWAGGER_ENABLED to enable/disable dangerous for production Swagger, example: true, available values: true, false',
+  })
+  isSwaggerEnabled: boolean;
+
   private initializeConfigValues() {
     this.env = this.configService.get('NODE_ENV') as Environment;
 
     this.port = configValidationUtility.convertToNumber(
       this.configService.get('PORT'),
     ) as number;
+
+    this.isSwaggerEnabled = configValidationUtility.convertToBoolean(
+      this.configService.get('IS_SWAGGER_ENABLED'),
+    ) as boolean;
   }
 
   constructor(private configService: ConfigService) {

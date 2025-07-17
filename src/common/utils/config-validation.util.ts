@@ -12,6 +12,13 @@ export const configValidationUtility = {
     return isNaN(num) ? null : num;
   },
 
+  convertToBoolean(value?: string): boolean | null {
+    const trimmed = value?.trim();
+    if (trimmed === 'true') return true;
+    if (trimmed === 'false') return false;
+    return null;
+  },
+
   validateConfig(config: any) {
     const errors = validateSync(config);
     if (errors.length > 0) {
