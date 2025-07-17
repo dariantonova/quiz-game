@@ -1,0 +1,24 @@
+import { validateSync } from 'class-validator';
+
+export const configValidationUtility = {
+  getEnumValuesString<T extends Record<string, string>>(enumObj: T): string {
+    return Object.values(enumObj).join(', ');
+  },
+
+  convertToNumber(value?: string): number | null {
+    if (!value?.trim()) return null; // undefined, пустая строка или строка из пробелов → null
+
+    const num = Number(value);
+    return isNaN(num) ? null : num;
+  },
+
+  validateConfig(config: any) {
+    const errors = validateSync(config);
+    if (errors.length > 0) {
+      const errorMessages = errors
+        .map((err) => Object.values(err.constraints || {}).join(', '))
+        .join('; ');
+      throw new Error('Config validation failed: ' + errorMessages);
+    }
+  },
+};
